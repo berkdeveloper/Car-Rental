@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Repositories.BrandRepository;
 using Core.Persistence.Repositories.Concrete;
 using Domain.Entities;
-using Persistence.Contexts;
+using Persistence.Data.Contexts;
 
 namespace Persistence.Repositories.BrandRepository;
 

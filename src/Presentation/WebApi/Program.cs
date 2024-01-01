@@ -1,4 +1,5 @@
 using Application;
+using Core.Application;
 using Microsoft.AspNetCore.Mvc;
 using Persistence;
 using System.Text.Json.Serialization;
@@ -11,6 +12,7 @@ var configuration = builder.Configuration;
 #region Custom Service Configuration
 builder.Services
 .AddApplication()
+.AddCoreApplication()
 .AddPersistence(configuration);
 #endregion
 

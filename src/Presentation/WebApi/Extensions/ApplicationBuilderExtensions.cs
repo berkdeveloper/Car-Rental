@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Persistence.Contexts;
+﻿using Persistence.Data.Contexts;
 using WebApi.Middleware;
 
 namespace WebApi.Extensions;

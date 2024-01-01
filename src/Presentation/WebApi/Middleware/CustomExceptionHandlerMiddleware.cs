@@ -1,5 +1,6 @@
-﻿using Application.Common.Exceptions;
-using Domain.Primitives;
+﻿using Core.Application.Common.Exceptions;
+using Core.Domain.Core;
+using Core.Domain.Primitives;
 using System.Net;
 using System.Text.Json;
 using WebApi.Constants;
@@ -34,18 +35,21 @@ internal class CustomExceptionHandlerMiddleware
 
     private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
-        (HttpStatusCode httpStatusCode, IReadOnlyCollection<Error> errors) = GetHttpStatusCodeAndErrors(exception);
+        var unitOfWork = httpContext.RequestServices.GetService<IUnitOfWork>();
 
-        httpContext.Response.ContentType = "application/json";
+        if (unitOfWork?.HasTransaction == true) await unitOfWork.RollbackTransactionAsync();
 
-        httpContext.Response.StatusCode = (int)httpStatusCode;
+        var exceptionHandler = GetHttpStatusCodeAndError(exception);
 
-        var serializerOptions = new JsonSerializerOptions
+        string response;
+
+        if (exceptionHandler.Error is not null)
+            response = GetResponseAsString(httpContext, exceptionHandler.HttpStatusCode, exceptionHandler.Error);
+        else
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        string response = JsonSerializer.Serialize(new ApiErrorResponse(errors), serializerOptions);
+            (HttpStatusCode httpStatusCode, IReadOnlyCollection<Error> errors) = GetHttpStatusCodeAndErrors(exception);
+            response = GetResponseAsString(httpContext, httpStatusCode, errors);
+        }
 
         await httpContext.Response.WriteAsync(response);
     }
@@ -56,5 +60,40 @@ internal class CustomExceptionHandlerMiddleware
                 ValidationException validationException => (HttpStatusCode.BadRequest, validationException.Errors),
                 _ => (HttpStatusCode.InternalServerError, new[] { Errors.ServerError })
             };
+
+    private static (HttpStatusCode HttpStatusCode, Error @Error) GetHttpStatusCodeAndError(Exception exception) =>
+              exception switch
+              {
+                  ConflictException conflictException => (HttpStatusCode.Conflict, new Error(nameof(HttpStatusCode.Conflict), conflictException.Message)),
+                  _ => (HttpStatusCode.InternalServerError, Errors.None)
+              };
+
+    private static string GetResponseAsString(HttpContext httpContext, HttpStatusCode httpStatusCode, Error error)
+    {
+        httpContext.Response.ContentType = "application/json";
+
+        httpContext.Response.StatusCode = (int)httpStatusCode;
+
+        var serializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        return JsonSerializer.Serialize(new ApiErrorResponse(error), serializerOptions);
+    }
+
+    private static string GetResponseAsString(HttpContext httpContext, HttpStatusCode httpStatusCode, IReadOnlyCollection<Error> errors)
+    {
+        httpContext.Response.ContentType = "application/json";
+
+        httpContext.Response.StatusCode = (int)httpStatusCode;
+
+        var serializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        return JsonSerializer.Serialize(new ApiErrorResponse(errors), serializerOptions);
+    }
 
 }

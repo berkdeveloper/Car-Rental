@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -7,13 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="Core.Persistence">
-	    <HintPath>..\..\..\..\corePackages\Core.Packages\src\Persistence\Core.Persistence\bin\Debug\net7.0\Core.Persistence.dll</HintPath>
-	  </Reference>
+	  <ProjectReference Include="..\..\..\..\corePackages\Core.Packages\src\Persistence\Core.Persistence\Core.Persistence.csproj" />
 	</ItemGroup>
 
 </Project>

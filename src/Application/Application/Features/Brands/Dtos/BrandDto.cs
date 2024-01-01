@@ -1,6 +1,9 @@
-﻿namespace Application.Features.Brands.Dtos;
+﻿using Application.Common.Core;
 
-public class BrandDto
+namespace Application.Features.Brands.Dtos;
+
+public class BrandDto : AuditBaseDto
 {
+    public Guid Id { get; set; }
     public string Name { get; set; }
 }

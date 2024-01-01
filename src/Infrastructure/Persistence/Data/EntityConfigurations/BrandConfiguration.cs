@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.EntityConfigurations
+namespace Persistence.Data.EntityConfigurations
 {
     public class BrandConfiguration : IEntityTypeConfiguration<Brand>
     {

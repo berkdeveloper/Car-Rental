@@ -1,6 +1,6 @@
-﻿using Application.Abstractions.Services;
-using Application.Utilities.Common.Responses.Concrete;
+﻿using Application.Abstractions.Services.Brands;
 using AutoMapper;
+using Core.Application.Utilities.Common.Responses.Concrete;
 using MediatR;
 
 namespace Application.Features.Brands.Commands.Create;

@@ -1,4 +1,4 @@
-﻿using Application.Utilities.Common.Responses.Concrete;
+﻿using Core.Application.Utilities.Common.Responses.Concrete;
 using MediatR;
 
 namespace Application.Features.Brands.Commands.Create

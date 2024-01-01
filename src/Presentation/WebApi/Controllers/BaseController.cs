@@ -1,4 +1,4 @@
-﻿using Application.Utilities.Common.Responses.ComplexTypes;
+﻿using Core.Application.Utilities.Common.Responses.ComplexTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
